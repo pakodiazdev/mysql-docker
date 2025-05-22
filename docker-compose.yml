@@ -1,0 +1,30 @@
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: mysql
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: ${ROOT_PASSWORD}
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_USER: ${DB_USER}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_EXTRA_DATABASES: ${EXTRA_DBS}
+    ports:
+      - "${MYSQL_FW_PORT}:3306"
+    volumes:
+      - ./init-extra-dbs.sh:/docker-entrypoint-initdb.d/init-extra-dbs.sh:ro
+      - mysql_data:/var/lib/mysql
+
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: phpmyadmin
+    restart: always
+    depends_on:
+      - mysql
+    environment:
+      PMA_HOST: mysql
+    ports:
+      - "${PHPMYADMIN_FW_PORT}:80"
+
+volumes:
+  mysql_data:
