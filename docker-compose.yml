@@ -1,3 +1,5 @@
+version: '3.9'
+
 services:
   mysql:
     image: mysql:8.0
@@ -25,6 +27,35 @@ services:
       PMA_HOST: mysql
     ports:
       - "${PHPMYADMIN_FW_PORT}:80"
+
+  web:
+    image: nginx:alpine
+    container_name: nginx
+    restart: always
+    ports:
+      - "${WEB_FW_PORT}:80"
+    volumes:
+      - ./public:/usr/share/nginx/html:rw
+
+  ftp:
+    image: fauria/vsftpd
+    container_name: ftp
+    restart: always
+    ports:
+      - "${FTP_FW_PORT}:21"
+      - "30000-30009:30000-30009"
+    environment:
+      FTP_USER: sencoteam
+      FTP_PASS: ${SENCOTEAM_PASSWORD}
+      PASV_ENABLE: "YES"
+      PASV_MIN_PORT: 30000
+      PASV_MAX_PORT: 30009
+      PASV_ADDRESS: 0.0.0.0   # 🌍 Abierto a toda la red
+      FILE_OPEN_MODE: 0777
+      LOCAL_UMASK: 000
+      LOG_STDOUT: "true"
+    volumes:
+      - ./public:/home/vsftpd/sencoteam:rw
 
 volumes:
   mysql_data:
