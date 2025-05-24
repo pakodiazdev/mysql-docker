@@ -2,3 +2,7 @@ senco-team.pakodiaz.dev {
   root * /srv
   file_server
 }
+
+pma.preregistro.pakodiaz.dev {
+  reverse_proxy phpmyadmin:80
+}
