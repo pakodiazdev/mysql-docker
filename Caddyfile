@@ -1,0 +1,4 @@
+senco-team.pakodiaz.dev {
+  root * /srv
+  file_server
+}
